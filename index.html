@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="bn" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSC Chemistry MCQ Exam</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- html2pdf.js CDN for Direct PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        /* Printable Solve Sheet Custom Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 20px;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700 no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-flask"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">Chemistry 1st Chapter 4[c-40+41]</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">রাসায়নিক পরিবর্তন (MCQ-30)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline text-lg text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- STEP 1: ROLL NUMBER LOGIN VIEW -->
+        <section id="login-section" class="w-full max-w-md mx-auto my-12 bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-700/60 text-center">
+            <div class="w-16 h-16 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">পরীক্ষার্থী যাচাইকরণ</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">পরীক্ষা শুরু করতে আপনার নির্ধারিত ৫ ডিজিটের রোল নম্বর লিখুন</p>
+            
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <input type="text" id="roll-input" maxlength="5" placeholder="যেমন: 83921" 
+                        class="w-full text-center text-2xl tracking-widest font-bold px-4 py-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-900 focus:border-brand-500 focus:outline-none transition-all">
+                </div>
+                
+                <div id="login-error" class="hidden text-rose-500 text-sm font-medium bg-rose-50 dark:bg-rose-950/40 py-2.5 px-4 rounded-xl">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> অকার্যকর রোল নম্বর! অনুগ্রহ করে সঠিক রোল নম্বর দিন।
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/30 transition-all active:scale-[0.98]">
+                    পরীক্ষায় প্রবেশ করুন <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- STEP 2: EXAM QUESTION SHEET VIEW -->
+        <section id="exam-section" class="hidden space-y-6">
+            <!-- Exam Info Header Card -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">পরীক্ষার্থী</span>
+                    <h3 class="text-xl font-bold" id="user-roll-display">রোল: -</h3>
+                </div>
+                <div class="flex items-center gap-6 text-sm font-medium">
+                    <div class="text-center">
+                        <span class="block text-xs text-slate-400">মোট প্রশ্ন</span>
+                        <span class="text-lg font-bold">৩০ টি</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-xs text-slate-400">সময়</span>
+                        <span class="text-lg font-bold text-amber-500">অসীমিত</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="questions-container" class="space-y-6">
+                <!-- Dynamically injected via JavaScript -->
+            </div>
+
+            <!-- Submit Exam Floating/Bottom Bar -->
+            <div class="sticky bottom-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur p-4 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <div class="text-sm font-medium">
+                    উত্তর দেওয়া হয়েছে: <span id="answered-count" class="font-bold text-brand-600 dark:text-brand-400">০</span> / ৩০
+                </div>
+                <button onclick="submitExam()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
+                    পরীক্ষা সাবমিট করুন <i class="fa-solid fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 3: RESULT & SOLUTION VIEW -->
+        <section id="result-section" class="hidden space-y-8">
+            <!-- Score Card Summary -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-700 text-center relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-500/10 rounded-full blur-2xl"></div>
+                
+                <h2 class="text-2xl font-bold mb-2">পরীক্ষার ফলাফল Summary</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-6" id="result-roll-info">রোল: -</p>
+
+                <!-- Big Score Gauge -->
+                <div class="inline-flex flex-col items-center justify-center w-36 h-36 rounded-full border-4 border-brand-500 bg-brand-50 dark:bg-slate-900 mb-6">
+                    <span class="text-4xl font-extrabold text-brand-600 dark:text-brand-400" id="score-text">0</span>
+                    <span class="text-xs text-slate-400 font-semibold">৩০ এর মধ্যে</span>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-8">
+                    <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
+                        <span class="block text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="correct-count">0</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">সঠিক উত্তর</span>
+                    </div>
+                    <div class="p-3 bg-rose-50 dark:bg-rose-950/40 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+                        <span class="block text-2xl font-bold text-rose-600 dark:text-rose-400" id="wrong-count">0</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">ভুল উত্তর</span>
+                    </div>
+                    <div class="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-100 dark:border-amber-800/40">
+                        <span class="block text-2xl font-bold text-amber-600 dark:text-amber-400" id="unattempted-count">0</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">উত্তর দেওয়া হয়নি</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 no-print">
+                    <button id="download-pdf-btn" onclick="downloadSolveSheetPDF()" class="px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> সলভ শিট ডাউনলোড (PDF)
+                    </button>
+                    <button onclick="window.print()" class="px-6 py-3.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> প্রিন্ট করুন
+                    </button>
+                </div>
+            </div>
+
+            <!-- Printable Solution Sheet Section -->
+            <div id="print-area" class="space-y-6">
+                <!-- Print Title (Visible in Download/Print view) -->
+                <div id="pdf-header" class="hidden print:block border-b-2 border-slate-800 pb-4 mb-6">
+                    <h1 class="text-2xl font-bold text-center text-slate-900">এইচএসসি রসায়ন কুইজ - সমাধান এবং ফলাফল</h1>
+                    <div class="flex justify-between items-center mt-4 text-sm font-semibold text-slate-700">
+                        <p id="print-roll">পরীক্ষার্থীর রোল: -</p>
+                        <p id="print-score">মোট প্রাপ্ত নম্বর: -</p>
+                        <p id="print-date">তারিখ: -</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mb-4 no-print">উত্তরপত্র ও বিস্তারিত সমাধান:</h3>
+                
+                <div id="solution-container" class="space-y-6">
+                    <!-- Dynamically generated solution cards with book page numbers -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- 1. CONFIGURATION & QUESTION BANK WITH PAGE NUMBERS ---
+        const VALID_ROLLS = ['83921', '51749', '29403', '64185', '90372', '15847', '73620', '48219', '36952', '92514'];
+
+        const QUESTIONS = [
+            {
+                id: 1,
+                question: "প্রথম ক্রম বিক্রিয়ার ক্ষেত্রে কোনটি সঠিক নয়?",
+                options: {
+                    A: "বিক্রিয়া অসম্পূর্ণ হলে শেষ হয়ে যায়।",
+                    B: "প্রাথমিক অবস্থায় ঘনমাত্রার উপর নির্ভরশীল নয়",
+                    C: "অর্দ্ধায়ু K1 নির্ভর ধ্রুব থাকে",
+                    D: "অর্দ্ধায়ু K2 নির্ভর ধ্রুব থাকে না।"
+                },
+                answer: "A",
+                page: "৪২৪"
+            },
+            {
+                id: 2,
+                question: "বিক্রিয়ার হারের নিয়ামক নয় কোনটি?",
+                options: {
+                    A: "তাপ",
+                    B: "চাপ",
+                    C: "ঘনমাত্রা",
+                    D: "তাপমাত্রা"
+                },
+                answer: "A",
+                page: "৪২৮"
+            },
+            {
+                id: 3,
+                question: "বিজ্ঞানী এস. আরহেনিয়াস কোনটি কোন প্রভাবটি অনুধাবন করেছিলেন?",
+                options: {
+                    A: "বিক্রিয়ার হারের উপর ঘনমাত্রার প্রভাব",
+                    B: "বিক্রিয়ার হারের উপর তাপমাত্রার প্রভাব",
+                    C: "বিক্রিয়ার হারের উপর আয়তনের প্রভাব",
+                    D: "বিক্রিয়ার হারের উপর চাপের প্রভাব"
+                },
+                answer: "B",
+                page: "৪২৮"
+            },
+            {
+                id: 4,
+                question: "Na₂S₂O₃(aq) + 2HCl(aq) → S(s) + 2NaCl(aq) + H₂O + SO₂(g) উক্ত বিক্রিয়ার তাপমাত্রা দ্বিগুণ করতে কোনটি করতে হবে?",
+                options: {
+                    A: "সক্রিয় শক্তি কমাতে হবে।",
+                    B: "তাপমাত্রা ২৭ থেকে ২৮৩ K করতে হবে।",
+                    C: "steric factor হ্রাস করতে হবে।",
+                    D: "হার ধ্রুবক কমাতে হবে।"
+                },
+                answer: "B",
+                page: "৪২৮"
+            },
+            {
+                id: 5,
+                question: "রাশিয়া-ইউক্রেন যুদ্ধে পারমাণবিক সংঘর্ষে একটি Hwasong-18 নামক একটি মিসাইল ধ্বংস হলো। যার ফলে প্রচুর তাপ উৎপন্ন হলো। মিসাইল বিধ্বস্ত হওয়ার কিছু সময় পর উক্ত স্থানের তাপমাত্রা যদি কক্ষ তাপমাত্রার চেয়ে ৩৭°C বেশি হয় তাহলে উক্ত স্থানে ঘটা রাসায়নিক বিক্রিয়াগুলোর 10¹⁰ টি অণুর মধ্যে কয়টি অণু সক্রিয় শক্তি লাভ করতে সক্ষম হবে?",
+                options: {
+                    A: "৩৬ টি",
+                    B: "৩৭ টি",
+                    C: "১৯ টি",
+                    D: "10¹⁰ টি"
+                },
+                answer: "A",
+                page: "৪৩০"
+            },
+            {
+                id: 6,
+                question: "আরহেনিয়াস সমীকরণের ঢাল-এর ক্ষেত্রে কোনটি ঠিক?",
+                options: {
+                    A: "একক: K",
+                    B: "সক্রিয় শক্তি Ea (+ve)",
+                    C: "সক্রিয় শক্তি Ea (-ve)",
+                    D: "একক: °C"
+                },
+                answer: "B",
+                page: "৪৩০"
+            },
+            {
+                id: 7,
+                question: "আরহেনিয়াস এর সমীকরণের ক্ষেত্রে প্রযোজ্য নয় কোনটি?",
+                options: {
+                    A: "এটি গ্যাসীয় মাধ্যমে ঘটে।",
+                    B: "এটি সমসত্ব বিক্রিয়ার ক্ষেত্রে ঘটে।",
+                    C: "এটি অসমসত্ব বিক্রিয়ার ক্ষেত্রে ঘটে।",
+                    D: "এটি তরল মাধ্যমে ঘটে।"
+                },
+                answer: "D",
+                page: "৪৩১"
+            },
+            {
+                id: 8,
+                question: "A → x বিক্রিয়াটির হার হলো—",
+                options: {
+                    A: "-dA/dt এবং dx/dt",
+                    B: "dx/dt এবং -dA/dt",
+                    C: "dA/dt এবং -dx/dt",
+                    D: "dt/dx এবং -dA/dt"
+                },
+                answer: "B",
+                page: "৪২০"
+            },
+            {
+                id: 9,
+                question: "45°C তাপমাত্রায় একটি বিক্রিয়ার বেগ ধ্রুবক 35°C তাপমাত্রায় এর বেগ দ্বিগুণ হলে বিক্রিয়াটির সক্রিয় শক্তি কত?",
+                options: {
+                    A: "36.54 kJ/mol",
+                    B: "56.457 kJ/mol",
+                    C: "45.834 kJ/mol",
+                    D: "104.53 kJ/mol"
+                },
+                answer: "B",
+                page: "৪৩৩"
+            },
+            {
+                id: 10,
+                question: "বিক্রিয়ার সূত্র কোনটি?",
+                options: {
+                    A: "বিক্রিয়ার হার ∝ 1/(ঘনমাত্রা)²",
+                    B: "বিক্রিয়ার হার ∝ (ঘনমাত্রা)²",
+                    C: "বিক্রিয়ার হার ∝ চাপ × তাপমাত্রা",
+                    D: "বিক্রিয়ার হার ∝ ঘনমাত্রা"
+                },
+                answer: "D",
+                page: "৪৩৫"
+            },
+            {
+                id: 11,
+                question: "ডেসিমোলার Na₂S₂O₃ দ্রবণের ঘনমাত্রার অধঃক্ষেপের সমাপ্তিকাল কত?",
+                options: {
+                    A: "98 s",
+                    B: "24 s",
+                    C: "10 s",
+                    D: "42 s"
+                },
+                answer: "C",
+                page: "৪৩৫"
+            },
+            {
+                id: 12,
+                question: "সক্রিয়ন শক্তি ক্ষেত্রে কোনটি সত্য?",
+                options: {
+                    A: "Ex = EA",
+                    B: "Ex ∝ EA",
+                    C: "Ex - EA",
+                    D: "Ex + EA"
+                },
+                answer: "C",
+                page: "৪৩৫"
+            },
+            {
+                id: 13,
+                question: "নিচের কোন বিক্রিয়ায় নিম্নচাপে উৎপাদ বেশি?",
+                options: {
+                    A: "H₂(g) + I₂(g) ⇌ 2HI(g)",
+                    B: "PCl₅(g) ⇌ PCl₃(g) + Cl₂(g)",
+                    C: "N₂(g) + 3H₂(g) ⇌ 2NH₃(g)",
+                    D: "N₂(g) + O₂(g) ⇌ 2NO(g)"
+                },
+                answer: "B",
+                page: "৪৩৫"
+            },
+            {
+                id: 14,
+                question: "সক্রিয় শক্তি বৃদ্ধি পেলে —",
+                options: {
+                    A: "বিক্রিয়ার গতি বৃদ্ধি পায়",
+                    B: "বিক্রিয়ার বেশি তাপমাত্রার প্রয়োজন হয়",
+                    C: "বিক্রিয়ার গতি হ্রাস পায়",
+                    D: "বিক্রিয়ায় বেশি তাপের প্রয়োজন হয়।"
+                },
+                answer: "C",
+                page: "৪৩৬"
+            },
+            {
+                id: 15,
+                question: "কোনটি বিক্রিয়া সংঘটনের শর্ত নয়?",
+                options: {
+                    A: "সংঘর্ষ",
+                    B: "নূন্যতম শক্তি",
+                    C: "তাপ উৎপন্ন হওয়া",
+                    D: "নির্দিষ্ট দিক বিন্যাস"
+                },
+                answer: "C",
+                page: "৪৩৭"
+            },
+            {
+                id: 16,
+                question: "আক্রমণকারী বিকারকের বাঁধা কে কী বলে?",
+                options: {
+                    A: "কুলম্বীয় বাধা",
+                    B: "প্রীতসাম্য বাধা",
+                    C: "স্থানিক বাধা",
+                    D: "দিকবিন্যাস বাধা"
+                },
+                answer: "C",
+                page: "৪৩৭"
+            },
+            {
+                id: 17,
+                question: "ক্লোরোফর্ম এর ক্ষেত্রে কোনটি সঠিক নয়?",
+                options: {
+                    A: "চেতনানাশক",
+                    B: "ফ্রি-রেডিকেলে পরিণত হয়",
+                    C: "H পরমাণুর দিকে বিক্রিয়া ঘটে",
+                    D: "বিক্রিয়া চারদিকে ঘটে।"
+                },
+                answer: "D",
+                page: "৪৩৮"
+            },
+            {
+                id: 18,
+                question: "সক্রিয় অণুগুলোর মধ্যে পূর্বের বন্ধন ভাঙন এবং নতুন বন্ধন গঠনের অবস্থাকে কী বলে?",
+                options: {
+                    A: "বন্ধনশক্তি",
+                    B: "ঘর্ষণ অবস্থা",
+                    C: "অবস্থান্তর অবস্থা",
+                    D: "অস্থিশীল অবস্থা"
+                },
+                answer: "C",
+                page: "৪৩৯"
+            },
+            {
+                id: 19,
+                question: "বিক্রিয়ার হার ও সক্রিয়ন শক্তির মধ্যকার সম্পর্ক কোনটি?",
+                options: {
+                    A: "বিক্রিয়ার হার ∝ 1/সক্রিয়ন শক্তি",
+                    B: "বিক্রিয়ার হার ∝ সক্রিয়ন শক্তি",
+                    C: "বিক্রিয়ার হার ∝ (সক্রিয়ন শক্তি)³",
+                    D: "বিক্রিয়ার হার ∝ 1/(সক্রিয়ন শক্তি)²"
+                },
+                answer: "A",
+                page: "৪৪০"
+            },
+            {
+                id: 20,
+                question: "প্রভাবক সক্রিয়ক সক্রিয়ণ শক্তির উপর কী প্রভাব ফেলে?",
+                options: {
+                    A: "বৃদ্ধি করে।",
+                    B: "হ্রাস করে।",
+                    C: "অপরিবর্তিত রাখে",
+                    D: "দ্বিগুণ করে।"
+                },
+                answer: "B",
+                page: "৪৪০"
+            },
+            {
+                id: 21,
+                question: "অটোমোবাইল কনভার্টারে কোন ধাতু ব্যবহৃত হয়?",
+                options: {
+                    A: "নিকেল",
+                    B: "গ্রাফাইট",
+                    C: "প্ল্যাটিনাম",
+                    D: "জিংক"
+                },
+                answer: "C",
+                page: "৪৪৪"
+            },
+            {
+                id: 22,
+                question: "রাসায়নিক শিল্পে কোন ধরনের প্রভাবক ব্যবহৃত হয়?",
+                options: {
+                    A: "সমসত্ব",
+                    B: "অসমসত্ব",
+                    C: "Mo",
+                    D: "Ni"
+                },
+                answer: "B",
+                page: "৪৪৪"
+            },
+            {
+                id: 23,
+                question: "কোনটি জৈব প্রভাবক?",
+                options: {
+                    A: "NH₂-CO-NH₂",
+                    B: "এনজাইম",
+                    C: "ম্যাঙ্গানিজ ডাইঅক্সাইড",
+                    D: "মোলিবডেনাম"
+                },
+                answer: "B",
+                page: "৪৪৫"
+            },
+            {
+                id: 24,
+                question: "কোনটি প্রভাবক বিষ?",
+                options: {
+                    A: "Pt",
+                    B: "S (গুঁড়া)",
+                    C: "SO₃ (গুঁড়া)",
+                    D: "H₂CO₃ (তরল)"
+                },
+                answer: "B",
+                page: "৪৪১"
+            },
+            {
+                id: 25,
+                question: "প্রভাবকের বৈশিষ্ট্য নয় কোনটি?",
+                options: {
+                    A: "সাম্যাবস্থাকে পরিবর্তন করতে পারে।",
+                    B: "কার্যকারিতা সুনির্দিষ্ট।",
+                    C: "ভরের পরিবর্তন ঘটে না।",
+                    D: "বিকল্প পথ তৈরি করে।"
+                },
+                answer: "A",
+                page: "৪৪০"
+            },
+            {
+                id: 26,
+                question: "সুক্রোজের আর্দ্র-বিশ্লেষণে কোনটি প্রভাবক হিসেবে কাজ করে?",
+                options: {
+                    A: "এসিড",
+                    B: "ক্ষার",
+                    C: "এনজাইম",
+                    D: "খনিজ লবণ"
+                },
+                answer: "A",
+                page: "৪৪২"
+            },
+            {
+                id: 27,
+                question: "কোনটি থেকে মার্জারিন তৈরি করা হয়?",
+                options: {
+                    A: "অলিভ অয়েল",
+                    B: "ভেজিটেবল অয়েল",
+                    C: "কোকোনাট অয়েল",
+                    D: "পাম অয়েল"
+                },
+                answer: "B",
+                page: "৪৩৩"
+            },
+            {
+                id: 28,
+                question: "প্রভাবন ক্রিয়ায় তাপমাত্রা কত?",
+                options: {
+                    A: "36°C",
+                    B: "37°C",
+                    C: "24°C",
+                    D: "25°C"
+                },
+                answer: "B",
+                page: "৪৪৬"
+            },
+            {
+                id: 29,
+                question: "প্রভাবন ক্রিয়ায় pH = ?",
+                options: {
+                    A: "7.00",
+                    B: "7.35",
+                    C: "7.4",
+                    D: "6.5"
+                },
+                answer: "A",
+                page: "৪৪৬"
+            },
+            {
+                id: 30,
+                question: "H₂(g) + Cl₂(g) ⇌ 2HCl(g); উক্ত বিক্রিয়ার প্রভাবক কোনটি?",
+                options: {
+                    A: "Mo",
+                    B: "As₂O₃",
+                    C: "hν",
+                    D: "Mn²⁺"
+                },
+                answer: "C",
+                page: "৪২৩"
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let currentRoll = null;
+        let userAnswers = {}; // { qId: selectedOption }
+
+        // --- 2. LOGIN & PERSISTENCE LOGIC ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const rollInput = document.getElementById('roll-input').value.trim();
+            const errorDiv = document.getElementById('login-error');
+
+            if (!VALID_ROLLS.includes(rollInput)) {
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            errorDiv.classList.add('hidden');
+            currentRoll = rollInput;
+
+            // Check if student already gave exam with this roll
+            const existingRecord = localStorage.getItem('hsc_chem_exam_' + currentRoll);
+            
+            if (existingRecord) {
+                // Directly show result if already submitted
+                const examData = JSON.parse(existingRecord);
+                showResultScreen(examData);
+            } else {
+                // Load fresh exam
+                startExam();
+            }
+        }
+
+        function startExam() {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('exam-section').classList.remove('hidden');
+            document.getElementById('user-roll-display').innerText = `রোল: ${currentRoll}`;
+            
+            renderQuestions();
+        }
+
+        // --- 3. QUESTION RENDERING & ANSWER SELECTION ---
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            QUESTIONS.forEach((q, idx) => {
+                const qCard = document.createElement('div');
+                qCard.className = "bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700 space-y-4";
+                
+                let optionsHtml = '';
+                for (const [key, val] of Object.entries(q.options)) {
+                    optionsHtml += `
+                        <label class="flex items-center p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-150 gap-3 group">
+                            <input type="radio" name="q_${q.id}" value="${key}" onchange="selectAnswer(${q.id}, '${key}')" class="w-5 h-5 text-brand-600 focus:ring-brand-500">
+                            <span class="font-bold text-slate-500 dark:text-slate-400 group-hover:text-brand-600">(${key})</span>
+                            <span class="text-slate-800 dark:text-slate-200 font-medium">${val}</span>
+                        </label>
+                    `;
+                }
+
+                qCard.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 font-bold flex items-center justify-center shrink-0">
+                            ${idx + 1}
+                        </span>
+                        <h4 class="text-lg font-semibold leading-snug pt-1">${q.question}</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(qCard);
+            });
+        }
+
+        function selectAnswer(questionId, selectedKey) {
+            userAnswers[questionId] = selectedKey;
+            document.getElementById('answered-count').innerText = Object.keys(userAnswers).length;
+        }
+
+        // --- 4. EXAM SUBMISSION & STORAGE ---
+        function submitExam() {
+            let correctCount = 0;
+            let wrongCount = 0;
+            let unattemptedCount = 0;
+
+            QUESTIONS.forEach(q => {
+                const userAns = userAnswers[q.id];
+                if (!userAns) {
+                    unattemptedCount++;
+                } else if (userAns === q.answer) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+            });
+
+            const examData = {
+                roll: currentRoll,
+                answers: userAnswers,
+                correct: correctCount,
+                wrong: wrongCount,
+                unattempted: unattemptedCount,
+                score: correctCount,
+                date: new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            };
+
+            // Save in localStorage so user can never re-attempt
+            localStorage.setItem('hsc_chem_exam_' + currentRoll, JSON.stringify(examData));
+
+            showResultScreen(examData);
+        }
+
+        // --- 5. RESULT & SOLUTION DISPLAY WITH PAGE NUMBERS ---
+        function showResultScreen(examData) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('exam-section').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+
+            // Summary Info
+            document.getElementById('result-roll-info').innerText = `রোল নম্বর: ${examData.roll} | তারিখ: ${examData.date}`;
+            document.getElementById('score-text').innerText = examData.score;
+            document.getElementById('correct-count').innerText = examData.correct;
+            document.getElementById('wrong-count').innerText = examData.wrong;
+            document.getElementById('unattempted-count').innerText = examData.unattempted;
+
+            // Print Header Info
+            document.getElementById('print-roll').innerText = `পরীক্ষার্থীর রোল: ${examData.roll}`;
+            document.getElementById('print-score').innerText = `মোট প্রাপ্ত নম্বর: ${examData.score} / ৩০`;
+            document.getElementById('print-date').innerText = `তারিখ: ${examData.date}`;
+
+            // Render Solution Sheet
+            const solContainer = document.getElementById('solution-container');
+            solContainer.innerHTML = '';
+
+            QUESTIONS.forEach((q, idx) => {
+                const userAns = examData.answers[q.id];
+                const isCorrect = userAns === q.answer;
+                const isUnanswered = !userAns;
+
+                let cardStatusClass = "border-slate-200 dark:border-slate-700";
+                let badgeHtml = "";
+
+                if (isUnanswered) {
+                    cardStatusClass = "border-amber-300 dark:border-amber-700/60 bg-amber-50/30 dark:bg-amber-950/20";
+                    badgeHtml = `<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300">উত্তর দেওয়া হয়নি</span>`;
+                } else if (isCorrect) {
+                    cardStatusClass = "border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/30 dark:bg-emerald-950/20";
+                    badgeHtml = `<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300"><i class="fa-solid fa-check mr-1"></i> সঠিক</span>`;
+                } else {
+                    cardStatusClass = "border-rose-300 dark:border-rose-700/60 bg-rose-50/30 dark:bg-rose-950/20";
+                    badgeHtml = `<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300"><i class="fa-solid fa-xmark mr-1"></i> ভুল</span>`;
+                }
+
+                let optionsSolutionHtml = '';
+                for (const [key, val] of Object.entries(q.options)) {
+                    let optionStyle = "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300";
+                    
+                    // Highlight correct answer in green always
+                    if (key === q.answer) {
+                        optionStyle = "border-emerald-500 bg-emerald-100/70 dark:bg-emerald-900/40 font-bold text-emerald-900 dark:text-emerald-200";
+                    } 
+                    // Highlight user's wrong answer in red
+                    else if (key === userAns && !isCorrect) {
+                        optionStyle = "border-rose-500 bg-rose-100/70 dark:bg-rose-900/40 font-bold text-rose-900 dark:text-rose-200";
+                    }
+
+                    optionsSolutionHtml += `
+                        <div class="p-3 rounded-xl border ${optionStyle} flex items-center justify-between text-sm">
+                            <span><strong>(${key})</strong> ${val}</span>
+                            ${key === q.answer ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>' : ''}
+                            ${key === userAns && !isCorrect ? '<i class="fa-solid fa-circle-xmark text-rose-600"></i>' : ''}
+                        </div>
+                    `;
+                }
+
+                const solCard = document.createElement('div');
+                solCard.className = `bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 ${cardStatusClass} shadow-sm space-y-4 print:border print:border-slate-300 print:bg-white print:text-black`;
+                solCard.innerHTML = `
+                    <div class="flex justify-between items-start gap-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center shrink-0">
+                                ${idx + 1}
+                            </span>
+                            <h4 class="text-base font-bold leading-snug pt-1 print:text-black">${q.question}</h4>
+                        </div>
+                        <div class="shrink-0 no-print">
+                            ${badgeHtml}
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1">
+                        ${optionsSolutionHtml}
+                    </div>
+
+                    <div class="text-xs font-semibold pt-2 border-t border-slate-100 dark:border-slate-700/60 flex flex-wrap justify-between items-center text-slate-500 print:text-slate-700 gap-2">
+                        <span>আপনার উত্তর: ${userAns ? `(${userAns})` : 'দেওয়া হয়নি'}</span>
+                        <span class="text-emerald-600 dark:text-emerald-400 print:text-emerald-700 font-bold">সঠিক উত্তর: (${q.answer})</span>
+                        <span class="bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800 px-2.5 py-1 rounded-md font-bold">
+                            <i class="fa-solid fa-book-open mr-1"></i> পৃষ্ঠা: ${q.page}
+                        </span>
+                    </div>
+                `;
+
+                solContainer.appendChild(solCard);
+            });
+        }
+
+        // --- 6. DIRECT SOLVE SHEET PDF DOWNLOAD FUNCTION ---
+        function downloadSolveSheetPDF() {
+            const downloadBtn = document.getElementById('download-pdf-btn');
+            const originalBtnText = downloadBtn.innerHTML;
+            
+            // Show loading indicator
+            downloadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> PDF তৈরি হচ্ছে...`;
+            downloadBtn.disabled = true;
+
+            const printElement = document.getElementById('print-area');
+            const pdfHeader = document.getElementById('pdf-header');
+            
+            // Temporarily reveal header & force light background for rendering
+            pdfHeader.classList.remove('hidden');
+            const wasDark = document.documentElement.classList.contains('dark');
+            if (wasDark) {
+                document.documentElement.classList.remove('dark');
+            }
+
+            const opt = {
+                margin:       [0.4, 0.4, 0.4, 0.4],
+                filename:     `HSC_Chemistry_SolveSheet_Roll_${currentRoll}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(printElement).save().then(() => {
+                // Restore state
+                pdfHeader.classList.add('hidden');
+                if (wasDark) {
+                    document.documentElement.classList.add('dark');
+                }
+                downloadBtn.innerHTML = originalBtnText;
+                downloadBtn.disabled = false;
+            }).catch(err => {
+                console.error("PDF generation error:", err);
+                pdfHeader.classList.add('hidden');
+                if (wasDark) {
+                    document.documentElement.classList.add('dark');
+                }
+                downloadBtn.innerHTML = originalBtnText;
+                downloadBtn.disabled = false;
+                alert("PDF ডাউনলোডে সমস্যা হয়েছে। ব্রাউজারের প্রিন্ট অপশনটি চেষ্টা করুন।");
+            });
+        }
+
+        // --- 7. THEME TOGGLE (LIGHT / NIGHT MODE) ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('hsc_theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('hsc_theme', 'dark');
+            }
+        });
+
+        // Initialize preferred theme
+        if (localStorage.getItem('hsc_theme') === 'dark' || (!('hsc_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</body>
+</html>
